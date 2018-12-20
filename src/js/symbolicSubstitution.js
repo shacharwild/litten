@@ -968,13 +968,7 @@ function checkIfArray(object){
     if (object[0]=='[' && object[object.length-1]==']'){ //if an array
         var arr =makeArray(object);
         arr=continueCheckIfarray(arr);
-        object='[';
-        for (let k=0; k<arr.length ; k++){
-            object+=arr[k];
-            if (k<arr.length-1)
-                object+=',';
-        }
-        object+=']';
+        object=arrToString(arr);
     }
     return object;
 }
@@ -1003,12 +997,11 @@ function continueCheckIfarray(arr){
                 var arrValue=globals.get(computedValue.substring(0,computedValue.indexOf('[')));
                 arrValue=arrValue.substring(1, arrValue.length-1); //remove []
                 var index=eval(computedValue.substring(computedValue.indexOf('[')+1, computedValue.indexOf(']')));
-                //if (globals.has(index))
-                //    index=globals.get(index);
                 var array = arrValue.split(',');
                 array[index]=checkIfString(array[index]);
                 array[index]=addSlash(array[index]);
                 arr[i]=array[index];
+                globals.set(computedValue.substring(0,computedValue.indexOf('[')),arrToString(arr));
             }
         }}
     return arr;
@@ -1025,6 +1018,18 @@ function propertyCheck(parsedComputed, value){
     // }
     //else
     return value;
+}
+
+function arrToString(arr){
+    let object='[';
+    for (let k=0; k<arr.length ; k++){
+        object+=arr[k];
+        if (k<arr.length-1)
+            object+=',';
+    }
+    object+=']';
+    return object;
+
 }
 function checkValueType(side, k,v) {
     if (side.type == 'Identifier' ) {
